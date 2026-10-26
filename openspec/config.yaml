@@ -1,0 +1,13 @@
+schema: spec-driven
+
+context: |
+  Android remote-only native client for the real Draw Things Mac app.
+  Public upstream contains engine and protocol, not the full Apple app UI.
+  No local AI, cloud compute, accounts, or Gallery writes.
+  Generated media and sensitive history are encrypted and app-private.
+  Use repository-local bd for all task state; never use bdg here.
+
+rules:
+  tasks:
+    - Use a Beads issue-reference table instead of markdown checkboxes. Beads is the authoritative task database under repository instructions.
+    - Claim and close work using bd; do not maintain duplicate task state in Markdown.

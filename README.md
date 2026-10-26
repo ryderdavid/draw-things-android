@@ -1,3 +1,5 @@
+> **Android fork:** See [ANDROID.md](ANDROID.md) for the remote-only Android project, open specification, and Beads plan. The text below is the preserved upstream README.
+
 # Draw Things Community
 
 This is a community repository that maintains public-facing code that runs [the Draw Things app](https://apps.apple.com/us/app/draw-things-ai-generation/id6444050820).
