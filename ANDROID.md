@@ -6,13 +6,15 @@ This repository is a fork of [Draw Things Community](https://github.com/drawthin
 
 ## Current state
 
-Project setup and specification only. There is no Android APK or implemented Android client yet. Existing Swift engine/CLI targets belong to upstream and are not Android application code.
+A working development client is implemented under `android/`. On 2026-10-26, a physical Android tablet received real 512 × 512 images from Draw Things Mac 1.20260716.0 over pinned TLS, with both raw and compressed responses, and reopened their encrypted private records byte-for-byte. This is an initial implementation, not a completed interface-parity or production-security release. Existing Swift engine/CLI targets remain upstream reference code and are not linked into the APK.
+
+See [Android build and test instructions](android/README.md) and [verification evidence](android/VERIFICATION.md).
 
 - Open change: [android-remote-control](openspec/changes/android-remote-control/proposal.md)
 - [Design and verified source constraints](openspec/changes/android-remote-control/design.md)
 - [Beads implementation references](openspec/changes/android-remote-control/tasks.md)
 - Local checkout: `~/Code/HomeAgentic/draw-things-android`
-- Feature branch: `spec/android-remote-control`
+- Feature branch: `feat/android-remote-client`
 - Origin: `https://github.com/ryderdavid/draw-things-android.git`
 - Upstream: `https://github.com/drawthingsai/draw-things-community.git`
 
@@ -20,6 +22,6 @@ Project setup and specification only. There is no Android APK or implemented And
 
 Use `bd prime`, `bd ready`, and `bd show dta-7ou` from this checkout. The repository-local Dolt database is authoritative; do not use the personal master board here. OpenSpec defines the product contract and Beads owns task status. Run `openspec validate android-remote-control --strict --no-interactive` to validate the change.
 
-First prove the wire codec against the running official Mac app. Its gRPC image fields carry tensors, not ordinary PNG/JPEG files; configuration is FlatBuffers. Android must not link upstream inference targets or ship model weights, including learned preview decoders. LAN and device-managed Tailscale routes use the same endpoint configuration. Server installation and VPN management are outside this app.
+The wire codec has been proved against the running official Mac app. Its gRPC image fields carry tensors, not ordinary PNG/JPEG files; configuration is FlatBuffers. Android must not link upstream inference targets or ship model weights, including learned preview decoders. LAN and device-managed Tailscale routes use the same endpoint configuration. Server installation and VPN management are outside this app.
 
 Acceptance requires an actual Mac-generated image reopened from the encrypted Android vault, plus audited image-interface parity. A Connected badge or mocked output is insufficient. App-only storage describes the Android copy; Mac retention is controlled by the Mac app.

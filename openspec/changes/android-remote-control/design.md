@@ -54,7 +54,7 @@ Build a parity inventory from the actual iOS app and Mac remote behavior, includ
 
 ### Encrypted app-only persistence
 
-Use Android Keystore to hold a non-exportable AES-256 key; encrypt objects with AES-GCM, a fresh unique nonce per write, authenticated version/object identity, and opaque random filenames. Originals, thumbnails, input copies, masks, drafts, prompts, seeds, configuration, credentials, and indexes must not appear in plaintext files or databases. Store ciphertext in internal no-backup storage. Disable cloud backup and device transfer through manifest and extraction rules; keys and data stay device-local. No broad media/storage permission, MediaStore insert, media scanner request, public external directory, exported file provider, share action, or automatic export in this version.
+Use Android Keystore to hold a non-exportable AES-256 wrapping key. Generate a fresh random AES-256 data key per record, wrap it using Keystore AES-GCM, and encrypt objects with software AES-GCM, using separate fresh nonces and authenticated version/object identity, and opaque random filenames. Originals, thumbnails, input copies, masks, drafts, prompts, seeds, configuration, credentials, and indexes must not appear in plaintext files or databases. Store ciphertext in internal no-backup storage. Disable cloud backup and device transfer through manifest and extraction rules; keys and data stay device-local. No broad media/storage permission, MediaStore insert, media scanner request, public external directory, exported file provider, share action, or automatic export in this version.
 
 Decode/display in memory; disable disk caches in image libraries. Encrypt temporary/spooled data as well. Bound image dimensions and stream sizes; process within a declared memory budget. Use atomic ciphertext writes and commit encrypted indexes only after durable object persistence. On disk-full/crash/authentication failure, never report a successful save or fall back to plaintext. Test orphan cleanup. Lost/invalidated keys cause an explicit unreadable-vault/reset flow, not silent key regeneration or deletion. Uninstall loses the vault. Deletion removes object references and ciphertext; do not promise physical secure erasure on flash. Use secure-window protection for sensitive screens and neutral notifications/recents to avoid incidental image disclosure. This does not prevent the Mac server from retaining its own outputs.
 
@@ -78,3 +78,20 @@ No existing Android data or users exist. Land this specification and Beads plan 
 - Can every image/control input and output format be encoded/decoded by a non-AI Android codec at acceptable memory cost?
 - Which advanced canvas and learned-preprocessing operations lack remote protocol support?
 - Which host TLS/trust setup will be used for the initial device-to-Mac acceptance run?
+
+## Implemented development slice (2026-10-26)
+
+The Kotlin/Compose app and pure JVM protocol module are isolated under `android/`.
+A read-only LLNL fpzip native codec decodes compressed tensors; it contains no learned
+model or inference engine. Raw float16/float32 and fpzip responses have reached a real
+Android tablet from official Draw Things Mac 1.20260716.0 over pinned TLS.
+
+The DTR2 vault uses envelope encryption because direct image-sized hardware Keystore
+AES-GCM operations failed authentication on the test API 28 tablet. The Keystore
+protects only a short data key; software AES-GCM protects each record. Device tests
+cover payloads around the 64 KiB boundary through 1 MiB, tampering, nonce freshness,
+and interrupted atomic replacement. This is functional evidence, not a security audit.
+
+Full iOS control parity, advanced canvas/reference inputs, key-loss reset UI, and broader
+failure acceptance remain tracked in Beads. See `android/VERIFICATION.md` for measured
+coverage. The OpenSpec change remains open.
